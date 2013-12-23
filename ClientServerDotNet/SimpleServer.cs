@@ -24,24 +24,6 @@ namespace ClientServerDotNet
         public List<Thread> SocketThreads { get; set; }
 
 
-
-        public void StartListening()
-        {
-            using (var socket = listener.AcceptSocket())
-            {
-                ServerConnection c = new ServerConnection()
-                {
-                    Id = "A",
-                    Socket = socket
-                };
-                var t = new Thread(new ThreadStart(c.DoIt));
-                t.Start();
-                SocketThreads.Add(t);
-            }
-        }
-
-
-
         public bool StartServer()
         {
             SocketThreads = new List<Thread>();
@@ -64,18 +46,55 @@ namespace ClientServerDotNet
 
 
 
+        public void StartListeningForNewConnections()
+        {
+            try
+            {
+                while (true)
+                {
+                    var socket = listener.AcceptSocket();
+                    
+                        ServerConnection c = new ServerConnection()
+                        {
+                            Id = "A",
+                            Socket = socket
+                        };
+                        var t = new Thread(new ThreadStart(c.ReceiveMessages));
+                        t.Start();
+                        SocketThreads.Add(t);
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+
+            }
+
+        }
+
+
+
+
         class ServerConnection
         {
             public Socket Socket { get; set; }
             public string Id { get; set; }
 
-            public void DoIt()
+            public void ReceiveMessages()
             {
-                for (int i = 0; i < 100  ; i++)
+                while(true) 
                 {
-                    Console.WriteLine(i);
-                }
-                
+                    byte[] b = new byte[1000];
+                    int k = Socket.Receive(b);
+                    for (int i = 0; i < k; i++)
+                    {
+                        Console.Write(Convert.ToChar(b[i]));
+                    }
+                    Console.WriteLine();
+                    }
             }
         }
 

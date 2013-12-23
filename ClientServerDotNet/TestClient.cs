@@ -16,8 +16,20 @@ namespace ClientServerDotNet
 
         public void Connect() 
         {
-            TcpClient client = new TcpClient();
-            client.Connect(SimpleServer.GetLocalIP(), 9911);
+            
+                using (TcpClient client = new TcpClient())
+                {
+                    client.Connect(SimpleServer.GetLocalIP(), 9911);
+                    Stream stm = client.GetStream();
+                    //this is sending a message to the server
+                    ASCIIEncoding asen = new ASCIIEncoding();
+                    string str = "Heelo i m " ;
+                    byte[] b = asen.GetBytes(str);
+                    stm.Write(b, 0, b.Length);
+                }
+          
+           
+          
         }
     }
 }
