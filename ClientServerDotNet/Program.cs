@@ -13,6 +13,7 @@ namespace ClientServerDotNet
         {
             var server = new SimpleServer();
             Thread listener;
+            Thread BroadCaster;
             if (server.StartServer())
             {
                 Console.WriteLine("server starting");
@@ -20,12 +21,14 @@ namespace ClientServerDotNet
 
                 listener = new Thread(new ThreadStart(server.StartListeningForNewConnections));
                 listener.Start();
-                
-                TestClient c = new TestClient();
-                c.Connect();
-
                 Console.WriteLine("Listener Dispatched");
+                BroadCaster = new Thread(new ThreadStart(server.StartBroadcasting));
+                BroadCaster.Start();
+                Console.WriteLine("BroadCaster Dispatched");
+          
+                
                 listener.Join();
+                BroadCaster.Join();
               
             }
             else 

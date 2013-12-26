@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using ChatLib;
 
 namespace ClientServerDotNet
 {
@@ -19,7 +20,7 @@ namespace ClientServerDotNet
             
                 using (TcpClient client = new TcpClient())
                 {
-                    client.Connect(SimpleServer.GetLocalIP(), 9911);
+                    client.Connect(StaticHelper.GetLocalIP(), 9911);
                     Stream stm = client.GetStream();
                     //this is sending a message to the server
                     ASCIIEncoding asen = new ASCIIEncoding();
